@@ -142,7 +142,7 @@ class ListField(fields.Field):
             return []
         return value
 
-class BooleanField(fields.BooleanField):
+class BooleanField(fields.NullBooleanField):
     def from_ldap(self, value, connection):
         return True if value.lower('true') else False
 
@@ -163,4 +163,3 @@ class BooleanField(fields.BooleanField):
         if not value:
             return False
         return value
-    
