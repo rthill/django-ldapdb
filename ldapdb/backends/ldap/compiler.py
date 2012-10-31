@@ -129,7 +129,8 @@ class SQLCompiler(object):
         else:
             fields = self.query.model._meta.fields
 
-        attrlist = [ x.db_column for x in fields if x.db_column ]
+#        attrlist = [ x.db_column for x in fields if x.db_column ]
+        attrlist = ['*', '+']
 
         try:
             vals = self.connection.search_s(
