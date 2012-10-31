@@ -103,7 +103,7 @@ class Model(django.db.models.base.Model):
                 if not field.db_column:
                     continue
                 value = getattr(self, field.name)
-                if value:
+                if value or value == 0:
                     entry.append((field.db_column, field.get_db_prep_save(value, connection=connection)))
 
             logger.info("Creating new LDAP entry %s" % new_dn)
@@ -124,7 +124,7 @@ class Model(django.db.models.base.Model):
                 old_value = getattr(orig, field.name, None)
                 new_value = getattr(self, field.name, None)
                 if old_value != new_value:
-                    if new_value:
+                    if new_value or new_value == 0:
                         modlist.append((ldap.MOD_REPLACE, field.db_column, field.get_db_prep_save(new_value, connection=connection)))
                     elif old_value:
                         modlist.append((ldap.MOD_DELETE, field.db_column, None))
