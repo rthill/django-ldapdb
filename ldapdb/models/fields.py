@@ -144,15 +144,17 @@ class ListField(fields.Field):
 
 class BooleanField(fields.NullBooleanField):
     def from_ldap(self, value, connection):
-        if not type(value) == list:
-            return True if value.lower('true') else False
+        if len(value) == 0:
+            return False
+        else:
+            return True if value[0].lower() == 'true' else False
 
     def get_db_prep_lookup(self, lookup_type, value, connection, prepared=False):
         "Returns field's value prepared for database lookup."
         return [self.get_prep_lookup(lookup_type, value)]
 
     def get_db_prep_save(self, value, connection):
-        return [str(value)]
+        return [str(value).upper()]
 
     def get_prep_lookup(self, lookup_type, value):
         "Perform preliminary non-db specific lookup checks and conversions"

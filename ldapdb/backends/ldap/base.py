@@ -34,9 +34,12 @@
 
 import ldap
 import django
+import logging
 
 from django.db.backends import BaseDatabaseFeatures, BaseDatabaseOperations, BaseDatabaseWrapper
 from django.db.backends.creation import BaseDatabaseCreation
+
+logger = logging.getLogger(__name__)
 
 class DatabaseCreation(BaseDatabaseCreation):
     def create_test_db(self, verbosity=1, autoclobber=False):
@@ -114,6 +117,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         return cursor.connection.rename_s(dn.encode(self.charset), newrdn.encode(self.charset))
 
     def search_s(self, base, scope, filterstr='(objectClass=*)',attrlist=None):
+        logger.debug("base: %s; scope: %s; filter: %s, attrs: %s" % (base, scope, filterstr.encode(self.charset), attrlist))
         cursor = self._cursor()
         results = cursor.connection.search_s(base, scope, filterstr.encode(self.charset), attrlist)
         output = []
