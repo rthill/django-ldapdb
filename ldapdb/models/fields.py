@@ -134,7 +134,7 @@ class ListField(fields.Field):
     def get_prep_lookup(self, lookup_type, value):
         "Perform preliminary non-db specific lookup checks and conversions"
         if lookup_type == 'contains':
-            return escape_ldap_filter(value)
+            return "*%s*" % escape_ldap_filter(value)
         raise TypeError("ListField has invalid lookup: %s" % lookup_type)
 
     def to_python(self, value):
