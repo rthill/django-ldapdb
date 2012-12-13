@@ -38,6 +38,7 @@ import logging
 
 from django.db.backends import BaseDatabaseFeatures, BaseDatabaseOperations, BaseDatabaseWrapper
 from django.db.backends.creation import BaseDatabaseCreation
+from ldap.ldapobject import ReconnectLDAPObject
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +92,8 @@ class DatabaseWrapper(BaseDatabaseWrapper):
 
     def _cursor(self):
         if self.connection is None:
-            self.connection = ldap.initialize(self.settings_dict['NAME'])
+#            self.connection = ldap.initialize(self.settings_dict['NAME'])
+            self.connection = ReconnectLDAPObject(self.settings_dict['NAME'])
             self.connection.simple_bind_s(
                 self.settings_dict['USER'],
                 self.settings_dict['PASSWORD'])
@@ -117,7 +119,7 @@ class DatabaseWrapper(BaseDatabaseWrapper):
         return cursor.connection.rename_s(dn.encode(self.charset), newrdn.encode(self.charset))
 
     def search_s(self, base, scope, filterstr='(objectClass=*)',attrlist=None):
-        logger.debug("base: %s; scope: %s; filter: %s, attrs: %s" % (base, scope, filterstr.encode(self.charset), attrlist))
+        logger.debug("base: %s; scope: %s; filter: %s, attrs: %s" % (base, scope, filterstr, attrlist))
         cursor = self._cursor()
         results = cursor.connection.search_s(base, scope, filterstr.encode(self.charset), attrlist)
         output = []
